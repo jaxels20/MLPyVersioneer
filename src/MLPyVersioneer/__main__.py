@@ -6,6 +6,7 @@ from summary import Summary
 
 import torch.nn as nn
 import torch.nn.functional as F
+import pandas as pd
 
 class Model(nn.Module):
     def __init__(self):
@@ -24,10 +25,11 @@ def main():
 
     summary = Summary(model)
 
-    summary.export()
+    summary.export(save_model=False, replace_latest=True)
     
+    evaluation_metrics = pd.DataFrame({'loss': [0.1, 0.2, 0.3], 'accuracy': [0.9, 0.8, 0.7]})
+    summary.export_evaluation(evaluation_metrics=evaluation_metrics, write_mode='w')
 
-    
 
 if __name__ == "__main__":
     main()
