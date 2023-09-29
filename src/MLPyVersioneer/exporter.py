@@ -1,6 +1,7 @@
 import os
 import sys
 import torch
+import json
 
 
 SUMMARY_FOLDER = "summaries"
@@ -27,9 +28,19 @@ class Exporter:
 
     def generate_files(self, summary) -> None:
 
+        summary_json = {}
+
+        summary_json["version"] = summary.version
+        summary_json["hyperparameters"] = summary.hyperparameters
+        summary_json["performance_metrics"] = summary.performance_metrics
+        summary_json["meta_data"] = str(summary.meta_data)
+
+
+
+
         # write the meta data to a file
-        with open(f"{SUMMARY_FOLDER}/summary_{summary.version}.txt", "w") as f:
-            f.write(str(summary.meta_data))
+        with open(f"{SUMMARY_FOLDER}/summary_{summary.version}.json", "w") as f:
+            f.write(json.dumps(summary_json, indent=4))
 
         # save the model
         torch.save(summary.model, f"{MODEL_FOLDER}/model_{summary.version}.pt")

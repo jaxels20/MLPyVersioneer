@@ -1,3 +1,4 @@
+from typing import Any
 from torch import nn
 from torchinfo import summary
 import os
@@ -9,10 +10,12 @@ SUMMARY_FOLDER = "summaries"
 
 class Summary:
 
-    def __init__(self, model, ) -> None:
+    def __init__(self, model, hyperparameters: dict = None, performance_metrics: dict = None) -> None:
         self.model = model
         self.exporter = Exporter()
         self.version = self.calculate_version()
+        self.hyperparameters = hyperparameters
+        self.performance_metrics = performance_metrics
 
 
         if isinstance(model, nn.Module):
@@ -49,6 +52,13 @@ class Summary:
 
         return version
     
+
+    def set_hyperparameters(self, hyperparameters: dict) -> None:
+        self.hyperparameters = hyperparameters
+
+    def set_performance_metrics(self, performance_metrics: dict) -> None:
+        self.performance_metrics = performance_metrics
+
         
 
         

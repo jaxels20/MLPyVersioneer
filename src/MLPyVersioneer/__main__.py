@@ -22,7 +22,7 @@ def main():
 
     model = Model()
 
-    summary = Summary(model)
+    summary = Summary(model, hyperparameters={"learning_rate": 0.01}, performance_metrics={"accuracy": 0.95})
 
     summary.export()
     
