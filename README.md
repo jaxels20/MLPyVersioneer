@@ -15,5 +15,5 @@ PyMLVersioneer is a Python library designed to simplify the versioning and manag
 
 You can install PyMLVersioneer using `pip`:
 ```bash
-pip install pymlversioneer
+pip install MLPyVersioneer
 ```
