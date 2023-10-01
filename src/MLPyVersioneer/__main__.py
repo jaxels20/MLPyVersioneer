@@ -21,10 +21,11 @@ class Model(nn.Module):
 def main():
 
     model = Model()
-
-    summary = Summary(model, hyperparameters={"learning_rate": 0.01}, performance_metrics={"accuracy": 0.95})
+    
+    summary = Summary(model, "Model", {"lr": 0.01}, {"accuracy": 0.99})
 
     summary.export()
+
     
 
     

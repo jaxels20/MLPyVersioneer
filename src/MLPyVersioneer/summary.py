@@ -1,28 +1,23 @@
-from typing import Any
 from torch import nn
-from torchinfo import summary
 import os
 import re
 
 from exporter import Exporter
 
-SUMMARY_FOLDER = "summaries"
+SUMMARY_FOLDER = "meta_data"
 
 class Summary:
 
-    def __init__(self, model, hyperparameters: dict = None, performance_metrics: dict = None) -> None:
+    def __init__(self, model, model_name: str = "model", hyperparameters: dict = None, performance_metrics: dict = None) -> None:
         self.model = model
+        self.model_name = model_name
         self.exporter = Exporter()
         self.version = self.calculate_version()
         self.hyperparameters = hyperparameters
         self.performance_metrics = performance_metrics
 
 
-        if isinstance(model, nn.Module):
-            self.meta_data = summary(model, verbose=0)
 
-
-    
     def export(self) -> None:
         
         self.exporter.generate_folders()
@@ -36,6 +31,10 @@ class Summary:
 
         except FileNotFoundError:
             return 1
+        
+        # only look at the models with the same name
+
+        files = [file for file in files if file.split("_")[0] == self.model_name]
 
         # get all the versions from the files
         versions = [int(re.findall(r'\d+', file)[0]) for file in files]
@@ -52,20 +51,18 @@ class Summary:
 
         return version
     
-
     def set_hyperparameters(self, hyperparameters: dict) -> None:
         self.hyperparameters = hyperparameters
 
     def set_performance_metrics(self, performance_metrics: dict) -> None:
         self.performance_metrics = performance_metrics
 
+
+    def get_architecture(self) -> dict:
+        if isinstance(self.model, nn.Module):
+            return {str(name): str(value) for name, value in self.model.named_children()} 
         
-
-        
-        
-
-
-
+        return None
         
 
 
