@@ -1,8 +1,5 @@
-
-
-
-
 from summary import Summary
+from training_phase_metric_storage import TrainingPhaseMetricStorage as Tpms
 
 import torch.nn as nn
 import torch.nn.functional as F
@@ -22,9 +19,10 @@ def main():
 
     model = Model()
     
-    summary = Summary(model, "Model", {"lr": 0.01}, {"accuracy": 0.99})
+    data = Tpms.load_from_json("meta_data/gnn_v2.json")
 
-    summary.export()
+    print(data.storage)
+
 
     
 
