@@ -1,5 +1,6 @@
 from torch import nn
-
+import keras
+from sklearn.base import BaseEstimator
 import os
 import re
 
@@ -39,30 +40,6 @@ class Summary:
         self.exporter.create_required_folders()
         self.exporter.save_model_summary(self)
 
-    def _determine_next_version(self) -> int:
-        """
-        Determine the next version number for the model based on existing saved summaries.
-
-        Returns:
-        - version (int): Next version number for the model.
-        """
-        try:
-            files = os.listdir(SUMMARY_FOLDER)
-        except FileNotFoundError:
-            return 1
-
-        # Filter files corresponding to the current model name
-        relevant_files = [file for file in files if file.split("_")[0] == self.model_name]
-
-        # Extract versions from the filenames
-        versions = [int(re.findall(r'\d+', file)[0]) for file in relevant_files]
-
-        if not versions:  # If there are no relevant files, start at version 1
-            return 1
-
-        latest_version = max(versions)
-        return latest_version + 1
-
     def update_hyperparameters(self, hyperparameters: dict) -> None:
         """
         Update model hyperparameters.
@@ -88,9 +65,24 @@ class Summary:
         Returns:
         - architecture (dict): Dictionary representation of model architecture or None if model is not of type nn.Module.
         """
+        # PyTorch
         if isinstance(self.model, nn.Module):  # Assumes PyTorch's nn.Module
             return {str(name): str(value) for name, value in self.model.named_children()}
-        return None
+        
+        # Keras
+        elif isinstance(self.model, keras.models.Model):
+            layers = [(layer.name, layer.get_config()) for layer in self.model.layers]
+            return dict(layers)
+        
+        # Scikit-learn
+        elif isinstance(self.model, BaseEstimator):
+            return {"class": str(self.model.__class__), "params": self.model.get_params()}
+    
+        # Other
+        else:
+            raise TypeError("Model type is not supported.")
+    
+
 
     def add_training_phase_metric(self, metrics_dict: dict) -> None:
         """
@@ -101,4 +93,26 @@ class Summary:
         """
         self.training_phase_metrics_storage.add_metric_from_dict(metrics_dict)
 
+    def _determine_next_version(self) -> int:
+        """
+        Determine the next version number for the model based on existing saved summaries.
 
+        Returns:
+        - version (int): Next version number for the model.
+        """
+        try:
+            files = os.listdir(SUMMARY_FOLDER)
+        except FileNotFoundError:
+            return 1
+
+        # Filter files corresponding to the current model name
+        relevant_files = [file for file in files if file.split("_")[0] == self.model_name]
+
+        # Extract versions from the filenames
+        versions = [int(re.findall(r'\d+', file)[0]) for file in relevant_files]
+
+        if not versions:  # If there are no relevant files, start at version 1
+            return 1
+
+        latest_version = max(versions)
+        return latest_version + 1

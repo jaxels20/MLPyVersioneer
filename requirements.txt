@@ -1,2 +1,6 @@
 torch==2.0.1
 numpy
+pandas
+plotly
+keras
+scikit-learn

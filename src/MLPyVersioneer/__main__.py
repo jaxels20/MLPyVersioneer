@@ -1,6 +1,6 @@
 from summary import Summary
 from training_phase_metric_storage import TrainingPhaseMetricStorage as Tpms
-
+from sklearn.ensemble import RandomForestClassifier
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -17,11 +17,7 @@ class Model(nn.Module):
 
 def main():
 
-    model = Model()
-    
-    data = Tpms.load_from_json("meta_data/gnn_v2.json")
-
-    print(data.storage)
+    pass
 
 
     

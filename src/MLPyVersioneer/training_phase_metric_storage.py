@@ -1,6 +1,9 @@
 from training_phase_metric import TrainingPhaseMetric
 import csv
 import json
+import pandas as pd
+import plotly.graph_objs as go
+
 
 class TrainingPhaseMetricStorage():
     """
@@ -112,3 +115,39 @@ class TrainingPhaseMetricStorage():
 
             for metric in self.get_metrics():
                 writer.writerow([metric.epoch, metric.name, metric.value])
+
+    def to_json(self, json_path: str) -> None:
+        """
+        Export the stored TrainingPhaseMetrics to a JSON file.
+
+        Args:
+        - json_path (str): Path to save the JSON file.
+        """
+        with open(json_path, 'w') as file:
+            json.dump(self.__json__(), file, indent=4)
+
+    def to_df(self) -> pd.DataFrame:
+        """
+        Export the stored TrainingPhaseMetrics to a pandas DataFrame.
+
+        Returns:
+        - pandas.DataFrame: DataFrame containing the stored metrics.
+        """
+        return pd.DataFrame([metric.__json__() for metric in self.get_metrics()])
+    
+    def plot_metric(self, metric_name: str, show : bool = False) -> go.Figure:
+        """Plot a metric using Plotly."""
+        if metric_name not in self.storage:
+            print(f"No metrics found with name: {metric_name}")
+            return
+        
+        metrics = self.get_metrics(metric_name)
+        epochs = [metric.epoch for metric in metrics]
+        values = [metric.value for metric in metrics]
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=epochs, y=values, mode='lines+markers', name=metric_name))
+        fig.update_layout(title=f'{metric_name} over Epochs', xaxis_title='Epoch', yaxis_title=metric_name)
+        if show:
+            fig.show()
+        return fig

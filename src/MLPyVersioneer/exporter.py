@@ -1,6 +1,9 @@
 import os
 import sys
 import torch
+import keras
+import joblib
+from sklearn.base import BaseEstimator
 import json
 from datetime import datetime
 
@@ -9,6 +12,8 @@ import sys
 import json
 from datetime import datetime
 import torch
+import keras
+import re
 
 SUMMARY_FOLDER = "meta_data"
 MODEL_FOLDER = "models"
@@ -57,9 +62,16 @@ class Exporter:
             json.dump(summary_data, f, indent=4)
 
         # Save the model state
-        model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.pt")
-        torch.save(summary.model.state_dict(), model_file_path)  # It's recommended to save state_dict instead of the whole model
+        if isinstance(summary.model, torch.nn.Module):
+            model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.pt")
+            torch.save(summary.model.state_dict(), model_file_path)  # It's recommended to save state_dict instead of the whole model
 
-        
+        elif isinstance(summary.model, keras.Model):
+            model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.h5")
+            summary.model.save(model_file_path)
+
+        elif isinstance(summary.model, BaseEstimator):
+            model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.pkl")
+            joblib.dump(summary.model, model_file_path)
 
 
