@@ -81,8 +81,6 @@ class Summary:
         # Other
         else:
             raise TypeError("Model type is not supported.")
-    
-
 
     def add_training_phase_metric(self, metrics_dict: dict) -> None:
         """
