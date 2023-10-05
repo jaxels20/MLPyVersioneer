@@ -1,6 +1,3 @@
-from torch import nn
-import keras
-from sklearn.base import BaseEstimator
 import os
 import re
 
@@ -66,21 +63,31 @@ class Summary:
         - architecture (dict): Dictionary representation of model architecture or None if model is not of type nn.Module.
         """
         # PyTorch
-        if isinstance(self.model, nn.Module):  # Assumes PyTorch's nn.Module
-            return {str(name): str(value) for name, value in self.model.named_children()}
+        try:
+            from torch import nn
+            if isinstance(self.model, nn.Module):  # Assumes PyTorch's nn.Module
+                return {str(name): str(value) for name, value in self.model.named_children()}
+        except ImportError:
+            raise ImportError("PyTorch is not installed.")
         
         # Keras
-        elif isinstance(self.model, keras.models.Model):
-            layers = [(layer.name, layer.get_config()) for layer in self.model.layers]
-            return dict(layers)
-        
+        try:
+            import keras
+            if isinstance(self.model, keras.models.Model):
+                layers = [(layer.name, layer.get_config()) for layer in self.model.layers]
+                return dict(layers)
+        except ImportError:
+            raise ImportError("Keras is not installed.")
+            
         # Scikit-learn
-        elif isinstance(self.model, BaseEstimator):
-            return {"class": str(self.model.__class__), "params": self.model.get_params()}
-    
-        # Other
-        else:
-            raise TypeError("Model type is not supported.")
+        try:
+            from sklearn.base import BaseEstimator
+            if isinstance(self.model, BaseEstimator):
+                return {"class": str(self.model.__class__), "params": self.model.get_params()}
+        except ImportError:
+            raise ImportError("Scikit-learn is not installed.")
+
+        raise TypeError("Model type is not supported.")
 
     def add_training_phase_metric(self, metrics_dict: dict) -> None:
         """

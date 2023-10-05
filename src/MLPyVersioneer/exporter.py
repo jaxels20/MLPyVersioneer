@@ -1,9 +1,6 @@
 import os
 import sys
-import torch
-import keras
 import joblib
-from sklearn.base import BaseEstimator
 import json
 from datetime import datetime
 
@@ -62,16 +59,26 @@ class Exporter:
             json.dump(summary_data, f, indent=4)
 
         # Save the model state
-        if isinstance(summary.model, torch.nn.Module):
-            model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.pt")
-            torch.save(summary.model.state_dict(), model_file_path)  # It's recommended to save state_dict instead of the whole model
-
-        elif isinstance(summary.model, keras.Model):
-            model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.h5")
-            summary.model.save(model_file_path)
-
-        elif isinstance(summary.model, BaseEstimator):
-            model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.pkl")
-            joblib.dump(summary.model, model_file_path)
-
+        try:
+            import torch
+            if isinstance(summary.model, torch.nn.Module):
+                model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.pt")
+                torch.save(summary.model.state_dict(), model_file_path)  # It's recommended to save state_dict instead of the whole model
+        except ImportError:
+            raise ImportError("PyTorch is not installed.")
+        try:
+            import keras
+            if isinstance(summary.model, keras.Model):
+                model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.h5")
+                summary.model.save(model_file_path)
+        except ImportError:
+            raise ImportError("Keras is not installed.")
+        
+        try:
+            from sklearn.base import BaseEstimator
+            if isinstance(summary.model, BaseEstimator):
+                model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.pkl")
+                joblib.dump(summary.model, model_file_path)
+        except ImportError:
+            raise ImportError("Scikit-learn is not installed.")
 
