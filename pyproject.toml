@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "MLPyVersioneer"
-version = "1.0.3"
+version = "1.0.4"
 description = "A Python package for versioning your python machine learning models."
 readme = "README.md"
 authors = [{ name = "Jeppe Berg Axelsen", email = "xfm82gtn@gmail.com" }]
