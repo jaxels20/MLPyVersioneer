@@ -1,4 +1,4 @@
-from training_phase_metric import TrainingPhaseMetric
+from MLPyVersioneer.training_phase_metric import TrainingPhaseMetric
 import csv
 import json
 import pandas as pd

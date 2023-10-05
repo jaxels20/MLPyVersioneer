@@ -4,8 +4,8 @@ from sklearn.base import BaseEstimator
 import os
 import re
 
-from exporter import Exporter
-from training_phase_metric_storage import TrainingPhaseMetricStorage
+from MLPyVersioneer.exporter import Exporter
+from MLPyVersioneer.training_phase_metric_storage import TrainingPhaseMetricStorage
 
 SUMMARY_FOLDER = "meta_data"
 
