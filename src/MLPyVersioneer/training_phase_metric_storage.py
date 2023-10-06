@@ -2,7 +2,6 @@ from MLPyVersioneer.training_phase_metric import TrainingPhaseMetric
 import csv
 import json
 import pandas as pd
-import plotly.graph_objs as go
 
 
 class TrainingPhaseMetricStorage():
@@ -135,8 +134,10 @@ class TrainingPhaseMetricStorage():
         """
         return pd.DataFrame([metric.__json__() for metric in self.get_metrics()])
     
-    def plot_metric(self, metric_name: str, show : bool = False) -> go.Figure:
+    def plot_metric(self, metric_name: str, show : bool = False):
         """Plot a metric using Plotly."""
+        import plotly.graph_objs as go
+        
         if metric_name not in self.storage:
             print(f"No metrics found with name: {metric_name}")
             return

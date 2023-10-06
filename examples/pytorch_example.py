@@ -1,5 +1,5 @@
 import torch
-from MLPyVersioneer.summary import Summary
+from MLPyVersioneer import Summary
 
 class SimpleNet(torch.nn.Module):
     def __init__(self):

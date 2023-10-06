@@ -1,6 +1,6 @@
 import os
 import sys
-import joblib
+
 import json
 from datetime import datetime
 
@@ -8,8 +8,6 @@ import os
 import sys
 import json
 from datetime import datetime
-import torch
-import keras
 import re
 
 SUMMARY_FOLDER = "meta_data"
@@ -65,20 +63,21 @@ class Exporter:
                 model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.pt")
                 torch.save(summary.model.state_dict(), model_file_path)  # It's recommended to save state_dict instead of the whole model
         except ImportError:
-            raise ImportError("PyTorch is not installed.")
+            pass
         try:
             import keras
             if isinstance(summary.model, keras.Model):
                 model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.h5")
                 summary.model.save(model_file_path)
         except ImportError:
-            raise ImportError("Keras is not installed.")
+            pass
         
         try:
             from sklearn.base import BaseEstimator
+            import joblib
             if isinstance(summary.model, BaseEstimator):
                 model_file_path = os.path.join(MODEL_FOLDER, f"{summary.model_name}_v{summary.version}.pkl")
                 joblib.dump(summary.model, model_file_path)
         except ImportError:
-            raise ImportError("Scikit-learn is not installed.")
+            pass
 

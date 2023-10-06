@@ -68,7 +68,7 @@ class Summary:
             if isinstance(self.model, nn.Module):  # Assumes PyTorch's nn.Module
                 return {str(name): str(value) for name, value in self.model.named_children()}
         except ImportError:
-            raise ImportError("PyTorch is not installed.")
+            pass
         
         # Keras
         try:
@@ -77,7 +77,7 @@ class Summary:
                 layers = [(layer.name, layer.get_config()) for layer in self.model.layers]
                 return dict(layers)
         except ImportError:
-            raise ImportError("Keras is not installed.")
+            pass
             
         # Scikit-learn
         try:
@@ -85,7 +85,7 @@ class Summary:
             if isinstance(self.model, BaseEstimator):
                 return {"class": str(self.model.__class__), "params": self.model.get_params()}
         except ImportError:
-            raise ImportError("Scikit-learn is not installed.")
+            pass
 
         raise TypeError("Model type is not supported.")
 
