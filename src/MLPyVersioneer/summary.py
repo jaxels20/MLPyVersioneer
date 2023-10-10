@@ -6,14 +6,12 @@ from MLPyVersioneer.training_phase_metric_storage import TrainingPhaseMetricStor
 
 SUMMARY_FOLDER = "meta_data"
 
-SUMMARY_FOLDER = "meta_data"
-
 class Summary:
     """
     Class to summarize the model details including hyperparameters, architecture, and performance metrics.
 
     Attributes:
-    - model (nn.Module): The PyTorch model to be summarized.
+    - model: Model to be summarized.
     - model_name (str): A descriptive name for the model.
     - hyperparameters (dict): The model's hyperparameters.
     - performance_metrics (dict): Performance metrics like accuracy, loss, etc.
@@ -28,7 +26,7 @@ class Summary:
         self.performance_metrics = performance_metrics
         self.training_phase_metrics_storage = TrainingPhaseMetricStorage()
         self.exporter = Exporter()  # Assumes the Exporter class has methods for generating folders and files.
-        self.version = self._determine_next_version()
+        self.version = self.determine_next_version()
 
     def save(self) -> None:
         """
@@ -89,16 +87,16 @@ class Summary:
 
         raise TypeError("Model type is not supported.")
 
-    def add_training_phase_metric(self, metrics_dict: dict) -> None:
+    def add_training_phase_metrics(self, metrics_dict: dict) -> None:
         """
         Add a TrainingPhaseMetric instance to the storage using a dictionary format.
 
         Args:
         - metric_dict (dict): Dictionary containing 'name', 'value', and 'epoch' keys.
         """
-        self.training_phase_metrics_storage.add_metric_from_dict(metrics_dict)
+        self.training_phase_metrics_storage.add_metrics_from_dict(metrics_dict)
 
-    def _determine_next_version(self) -> int:
+    def determine_next_version(self) -> int:
         """
         Determine the next version number for the model based on existing saved summaries.
 
@@ -110,13 +108,14 @@ class Summary:
         except FileNotFoundError:
             return 1
 
-        # Filter files corresponding to the current model name
-        relevant_files = [file for file in files if file.split("_")[0] == self.model_name]
+        relevant_files = [file for file in files if "_".join(file.split("_")[:-1]) == self.model_name]
+
 
         # Extract versions from the filenames
         versions = [int(re.findall(r'\d+', file)[0]) for file in relevant_files]
 
         if not versions:  # If there are no relevant files, start at version 1
+            print("No relevant files found.")
             return 1
 
         latest_version = max(versions)
