@@ -80,7 +80,7 @@ We welcome contributions! If you find a bug or have suggestions for improvements
 
 ## License
 
-[MIT License](LICENSE.txt) (or specify your license and provide a link)
+[MIT License](LICENSE.txt)
 
 ## Acknowledgments
 
