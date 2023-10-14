@@ -1,7 +1,9 @@
 # PyMLVersioneer - Python Machine Learning Model Versioning Library
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-
+[![Downloads](https://static.pepy.tech/badge/MLPyVersioneer)](https://pepy.tech/project/MLPyVersioneer)
+[![Downloads](https://static.pepy.tech/badge/MLPyVersioneer/month)](https://pepy.tech/project/MLPyVersioneer)
+[![Downloads](https://static.pepy.tech/badge/MLPyVersioneer/week)](https://pepy.tech/project/MLPyVersioneer)
 # MLPyVersioneer
 
 `MLPyVersioneer` is a dedicated Python module designed for ML practitioners, assisting in capturing, storing, and managing critical details of machine learning models throughout their training phase.
